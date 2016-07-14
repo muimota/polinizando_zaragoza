@@ -1,0 +1,21 @@
+$background : #000000;
+
+body{
+  margin: 0px;
+}
+
+div.info{
+  position: absolute;
+  top:60px;
+  left:30px;
+  h1{
+    font-family: monospace;
+  }
+}
+
+#game{
+  width:800px;
+  height:800px;
+  background-color: $background;
+  background-image: url('../imgs/polen.png')
+}
