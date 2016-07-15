@@ -14,8 +14,12 @@ div.info{
 }
 
 #game{
-  width:800px;
-  height:800px;
+  width:512px;
+  height:512px;
   background-color: $background;
   background-image: url('../imgs/polen.png')
+}
+
+pre{
+  display: none;
 }

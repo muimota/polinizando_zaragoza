@@ -10,7 +10,7 @@ function init(){
   var canvasHeight = canvas.getAttribute('height');
 
   //resizeCanvas(canvas,canvasWidth,canvasHeight);
-  
+
   var stage = new createjs.Stage('game');
 
   createjs.Ticker.setFPS(30);
@@ -36,29 +36,6 @@ function init(){
   */
 }
 
-function resizeCanvas(canvas,maxWidth,maxHeight){
-
-  let windowWidth  = window.innerWidth;
-  let windowHeight = window.innerHeight;
-
-
-  //apaisado
-  if(windowWidth > windowHeight){
-    let canvasHeight = windowHeight/windowWidth * maxWidth;
-    canvas.setAttribute('width',maxWidth);
-    canvas.setAttribute('height',canvasHeight);
-  }else{
-    let canvasWidth  = windowWidth/windowHeight * maxHeight;
-    canvas.setAttribute('width',canvasWidth);
-    canvas.setAttribute('height',maxHeight);
-  }
-
-  let canvasWidth  = canvas.getAttribute('width');
-  let canvasHeight = canvas.getAttribute('height');
-
-  let spanInfo = document.getElementById("canvasSize");
-  spanInfo.innerHTML = "("+canvasWidth+"x"+canvasHeight+")";
-}
 
 //export function to the global scope
 window.init = init;
