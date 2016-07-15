@@ -1,3 +1,5 @@
+//Class to handle all
+
 class PollenModel{
   //csv is text in csv format
   constructor(csv){

@@ -1,6 +1,8 @@
 import {FluidField} from './FluidField.es6'
 import {PollenStation} from './PollenStation.es6'
 import {PollenModel} from './PollenModel.es6'
+import {WindModel} from './WindModel.es6'
+
 
 class FluidScene extends createjs.Container{
 
@@ -15,11 +17,16 @@ class FluidScene extends createjs.Container{
     this.fieldShape = new createjs.Shape();
     this.addChild(this.fieldShape);
 
-    //init data
+    //init Pollen data
     var data = document.getElementById('pollenData').textContent;
     this.pm = new PollenModel(data);
     console.log(this.pm.getGenusName(2));
     console.log(this.pm.getPollenCount('20160511'));
+
+    //init Wind data
+    var data = document.getElementById('windData').textContent;
+    this.wm = new WindModel(data);
+    console.log(this.wm.getWind('20160511'));
 
 
     this.stations = new  Array();
