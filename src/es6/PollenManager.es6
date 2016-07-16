@@ -1,27 +1,37 @@
 
+class PollenManager{
 
-class PollenStation{
+  constructor(container,field,particleModel,ttl = 100){
 
-  constructor(x,y,container,field,color='yellow',particleCount = 200,ttl = 100){
+    this.field         = field;
+    this.container     = container;
+    this.particleModel = particleModel;
+    this.particlePool  = new Array();
+    this.ttl           = ttl;
 
-    this.pos = new createjs.Point(x,y);
-    this.field = field;
-    this.container = container;
-    this.particleCount = particleCount;
+  }
+
+  clear(){
+
+    this.container.removeAllChildren();
     this.particlePool = new Array();
-    this.ttl = ttl;
-    this.radius = 50;
-    for(let i=0;i<particleCount;i++){
-      let particle = new PollenParticle(color)
-      particle.x = this.pos.x+Math.random()*this.radius-this.radius/2;
-      particle.y = this.pos.y+Math.random()*this.radius-this.radius/2;
-      particle.ttl = i%this.ttl;
-      container.addChild(particle);
+
+  }
+
+  populatePollen(pollenCount){
+
+    for(let i=0;i<pollenCount;i++){
+      let particle = this.particleModel.getPollen();
+      particle.ttl = Math.random()*100;
       this.particlePool.push(particle);
+      this.container.addChild(particle);
     }
+    this.particleCount = pollenCount;
+
   }
 
   update(){
+
     var fieldWidth  = this.field.width;
     var fieldHeight = this.field.height;
 
@@ -41,17 +51,15 @@ class PollenStation{
       particle.alpha = life;
       if(particle.ttl <= 0 || particle.x<0 || particle.x>this.container.width ||
         particle.y<0 || particle.y > this.container.height){
-        particle.x = this.pos.x+Math.random()*this.radius-this.radius/2;
-        particle.y = this.pos.y+Math.random()*this.radius-this.radius/2;
-        particle.ttl = this.ttl;
-        particle.alpha = 0;
-
+        let p2 = this.particleModel.getPollen();
+        particle.ttl = 100;
+        particle.x = p2.x;
+        particle.y = p2.y;
+        //particle.ttl = this.ttl;
       }
-
     }
   }
 }
-
 
 
 class PollenParticle extends createjs.Shape{
@@ -59,12 +67,12 @@ class PollenParticle extends createjs.Shape{
   constructor(color = 'yellow' ,position = new createjs.Point(0,0)){
     super();
     this.graphics.beginFill(color);
-    let radius = 5;
+    let radius = 3;
     this.graphics.drawRect(-radius, -radius
                           ,radius*2,radius*2);
     this.position = position;
-    this.ttl;
+    this.ttl = 100;
   }
 }
 
-export {PollenStation,PollenParticle};
+export {PollenManager,PollenParticle};

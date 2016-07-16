@@ -1,4 +1,4 @@
-//Class to handle all
+//Class to handle load and access wind info
 
 class WindModel{
   //csv is text in csv format
