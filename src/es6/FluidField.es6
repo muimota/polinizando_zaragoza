@@ -4,7 +4,7 @@ class FluidField{
 
     this.iterations = iterations;
     this.visc = 0.5;
-    this.dt = 0.025;
+    this.dt = 0.05;
     this.dens;
     this.dens_prev;
     this.u;
@@ -247,8 +247,8 @@ class FluidField{
     this.v[(x + 1) + (y + 1) * this.rowSize] = yv;
   }
   getFieldPosition(x,y){
-    let sx = Math.round(x/this.screenWidth  * this.width);
-    let sy = Math.round(y/this.screenHeight * this.height);
+    let sx = Math.floor(x/this.screenWidth  * this.width);
+    let sy = Math.floor(y/this.screenHeight * this.height);
     return [sx,sy];
   }
   getXVelocity(x, y) {
