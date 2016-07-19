@@ -18,48 +18,49 @@ class FluidScene extends createjs.Container{
     this.fieldShape = new createjs.Shape();
     this.addChild(this.fieldShape);
 
-    //init Pollen data
-    var pollenData   = document.getElementById('pollenData').textContent;
-    var emittersData = document.getElementById('emittersData').textContent;
-
-    this.pm = new PollenModel(pollenData,emittersData);
-    //pollen Manager
-    this.pmgr = new PollenManager(this,this.field,this.pm);
-    this.pm.setPollenDistribution('20160511');
-    this.pmgr.populatePollen(1000);
-
     //init Wind data
     var windData = document.getElementById('windData').textContent;
     this.wm = new WindModel(windData);
-    console.log(this.wm.getWind('20160511'));
 
-/*
-    this.stations = new  Array();
-    let colors=['red','yellow','black','green','magenta','violet','acuablue'];
-    for(let i=0;i<8;i++){
-      for(let j=0;j<8;j++){
-        if((i+j)% 2 == 0){
-          this.stations.push(new PollenStation(128*i,128*j,this,this.field,colors[(i+j)%colors.length]))
-        }
-      }
-    }
-*/
+    //init Pollen data
+    var pollenData   = document.getElementById('pollenData').textContent;
 
+    this.pm = new PollenModel(pollenData);
+
+    //vector field
+    let pollenContainer = new createjs.Container();
+    this.addChild(pollenContainer);
+
+    //pollen Manager
+    this.pmgr = new PollenManager(pollenContainer,this.field,this.pm,this.wm);
+
+    this.timeline = this.pm.dates;
+    this.dateIndex = 0;
+    this.timer = 0;
+
+    this.setDate(this.timeline[this.dateIndex]);
   }
 
   update(event){
 
-    var delta = event.delta/1000;
-    this.setWind(45,.5)
-    this.field.update();
+    this.timer += event.delta;
+    if(this.timer > 5000){
+      this.timer = 0;
+      this.dateIndex  = (this.dateIndex + 1) % this.timeline.length;
+      let date = this.timeline[this.dateIndex];
+      this.setDate(date)
+    }
     this.drawField();
-    /*
-    for(let station of this.stations){
-      station.update();
-    }*/
     this.pmgr.update();
   }
 
+  setDate(date){
+    this.pmgr.setDate(date)
+    let year  = date.substring(0,4);
+    let month = date.substring(4,6);
+    let day   = date.substring(6,8);
+    document.getElementById("date").innerHTML = `${day}/${month}/${year}`;
+  }
   setWind(angle,speed){
 
     angle = (angle + 270) % 360;
@@ -79,15 +80,9 @@ class FluidScene extends createjs.Container{
       this.field.setVelocity(fieldSize-1,j,windX,windY);
     }
 
-
-    /*
-    this.field.setVelocity(fieldSize/2,2,windX,windY);
-    this.field.setVelocity(fieldSize-2,fieldSize/2,windX,windY);
-    this.field.setVelocity(fieldSize/2,fieldSize-2,windX,windY);
-    this.field.setVelocity(2,fieldSize/2,windX,windY);
-    */
-
   }
+
+
 
   drawField(){
     var g = this.fieldShape.graphics;

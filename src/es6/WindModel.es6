@@ -7,6 +7,12 @@ class WindModel{
   	this.dates = lines[0].split(',');
     this.windDirections = lines[1].split(',');
     this.windSpeeds = lines[2].split(',');
+
+    for(let i=0;i<this.windDirections.length;i++){
+      this.windDirections[i] = Number(this.windDirections[i]);
+      this.windSpeeds[i] = Number(this.windSpeeds[i]);
+
+    }
   }
 
   //returns [windDir,windSpeed]
