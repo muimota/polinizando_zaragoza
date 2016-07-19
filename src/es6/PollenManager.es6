@@ -136,7 +136,11 @@ class PollenManager{
 
         particle.x += velx*this.field.screenWidth/this.field.width;
         particle.y += vely*this.field.screenHeight/this.field.height;
-        particle.ttl --;
+        if(particle.alive){
+          particle.ttl --;
+        }else{
+          particle.ttl -= 3;
+        }
         let tween = particle.ttl/this.ttl;
         if(tween>.9){
           tween = (1-tween)/.1*.9;
