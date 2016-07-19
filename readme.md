@@ -1,6 +1,8 @@
 # Polinizando Zaragoza
 
-This is a visualization prototype about the pollen in the city of Zaragoza.
+![Alt text](thumb.png "Project screenshot")
+
+A visualization prototype about the pollen in the city of Zaragoza.
 
 The prototype displays information about:
  * Pollen (CUPRESS,MORACEAE,QUERCUS,OLEA,POPULUS,PLATANUS,PINUS)
