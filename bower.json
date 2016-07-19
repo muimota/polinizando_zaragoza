@@ -1,6 +1,6 @@
 {
-  "name": "repsol",
-  "description": "test game",
+  "name": "etopia_pollen_visJul2016",
+  "description": "Code from a visualization workshop that took place in Etopia (http://www.zaragoza.es/ciudad/etopia/)  by Nerea Calvillo and Martin Nadal",
   "main": "",
   "authors": [
     "Martin Nadal <martin.nadal@gmail.com>"
@@ -11,9 +11,7 @@
   "ignore": [
     "**/.*",
     "node_modules",
-    "bower_components",
-    "test",
-    "tests"
+    "bower_components"
   ],
   "dependencies": {
     "EaselJS": "easeljs#^0.8.2"
