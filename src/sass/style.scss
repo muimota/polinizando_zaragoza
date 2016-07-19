@@ -18,7 +18,13 @@ div.info{
   }
 
 }
+#pollenVis{
+  margin: 0 auto;
+  width:$canvassize;
+  height:$canvassize;
+  //transform:scale(.8,.8);
 
+}
 #game{
   width:$canvassize;
   height:$canvassize;
