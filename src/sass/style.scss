@@ -1,4 +1,6 @@
 $background : #000000;
+$canvassize : 1024px;
+
 
 body{
   margin: 0px;
@@ -6,20 +8,24 @@ body{
 
 div.info{
   position: absolute;
-  top:60px;
-  left:30px;
+  width:$canvassize;
+  height:$canvassize;
+  background-image: url('../imgs/mosquitos.png');
   h1{
     font-family: monospace;
+    margin-left:660px;
+    margin-top:60px;
   }
+
 }
 
 #game{
-  width:512px;
-  height:512px;
+  width:$canvassize;
+  height:$canvassize;
   background-color: $background;
   background-image: url('../imgs/polen.png')
 }
 
-pre{
+.hidden{
   display: none;
 }
