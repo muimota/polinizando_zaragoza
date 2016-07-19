@@ -10,6 +10,7 @@ class PollenManager{
     this.container     = container;
     this.particleModel = particleModel;
     this.windModel     = windModel;
+    this.distribution  = new Array(); //previus distribution
     this.particlePool  = new Array();
     this.windAngle;
     this.windSpeed;
@@ -18,9 +19,11 @@ class PollenManager{
     this.date;
 
     //deberia ir en parametros
-    for(let i=0;i<this.particleModel.genusNames.length;i++){
-        let pollenMask = new PollenMask(document.getElementById('genus'+i),1024,1024);
+    for(let genusId=0;genusId<this.particleModel.genusNames.length;genusId++){
+        let pollenMask = new PollenMask(document.getElementById('genus'+genusId),1024,1024);
         this.pollenMasks.push(pollenMask);
+        this.distribution.push(0);
+        this.particlePool.push(new Array());
     }
 
   }
@@ -42,44 +45,30 @@ class PollenManager{
   }
 
   setPollenDistribution(distribution){
-
-
-    this.clear();
+    //marcar las particulas que sobran para que no se reciclen en update
     for(let genusId=0;genusId<distribution.length;genusId++){
-      let pollenCount = distribution[genusId];
-      for(let i=0;i<pollenCount;i++){
-        let particle = new PollenParticle(genusId,this.ttl);
+      let difference = distribution[genusId] - this.distribution[genusId];
+      let particlePool = this.particlePool[genusId];
+      if(difference<0){
+        for(let i=0;i<Math.abs(difference);i++){
+          particlePool[i].alive=false;
+        }
+      }else{
+        for(let i=0;i<difference;i++){
 
-        let position = this.pollenMasks[genusId].getPollenPosition();
+          let particle = new PollenParticle(genusId,this.ttl);
+          let position = this.pollenMasks[genusId].getPollenPosition();
 
-        particle.x = position[0];
-        particle.y = position[1];
-        particle.ttl = Math.round(Math.random()*this.ttl);
+          particle.x = position[0];
+          particle.y = position[1];
+          particle.ttl = Math.round(Math.random()*this.ttl);
 
-
-        this.particlePool.push(particle);
-        this.container.addChild(particle);
+          particlePool.push(particle);
+          this.container.addChild(particle);
+        }
       }
     }
-
-  }
-  populatePollen(pollenCount){
-
-    for(let i=0;i<pollenCount;i++){
-      let genusId   = Math.floor(Math.random()*7);
-      let particle = new PollenParticle(genusId,this.ttl);
-
-      let position = this.pollenMasks[genusId].getPollenPosition();
-
-      particle.x = position[0];
-      particle.y = position[1];
-      particle.ttl = Math.round(Math.random()*this.ttl);
-
-
-      this.particlePool.push(particle);
-      this.container.addChild(particle);
-    }
-
+    this.distribution = distribution;
   }
 
   setWind(angle,speed){
@@ -111,36 +100,42 @@ class PollenManager{
     var fieldWidth  = this.field.width;
     var fieldHeight = this.field.height;
 
-    for(let i = 0;i<this.particlePool.length;i++){
+    for(let genusId=0;genusId<this.distribution.length;genusId++){
+      let particlePool = this.particlePool[genusId];
 
-      let particle = this.particlePool[i];
+      for(let i = particlePool.length - 1 ; i>=0 ; i--){
 
-      if(particle.x > this.field.screenWidth/this.field.width * (this.field.width - 1)){
+        let particle = particlePool[i];
+        let pos  = this.field.getFieldPosition(particle.x,particle.y);
+        let velx = this.field.getXVelocity(pos[0],pos[1]);
+        let vely = this.field.getYVelocity(pos[0],pos[1]);
 
-      }
+        particle.x += velx*this.field.screenWidth/this.field.width;
+        particle.y += vely*this.field.screenHeight/this.field.height;
+        particle.ttl --;
+        let tween = particle.ttl/this.ttl;
+        if(tween>.9){
+          tween = (1-tween)/.1*.9;
+        }
+        particle.alpha = tween;
 
-      let pos  = this.field.getFieldPosition(particle.x,particle.y);
-      let velx = this.field.getXVelocity(pos[0],pos[1]);
-      let vely = this.field.getYVelocity(pos[0],pos[1]);
+        if(particle.ttl <= 0 || particle.x<0 || particle.x>this.container.width ||
+          particle.y<0 || particle.y > this.container.height){
 
-      particle.x += velx*this.field.screenWidth/this.field.width;
-      particle.y += vely*this.field.screenHeight/this.field.height;
-      particle.ttl --;
-      let tween = particle.ttl/this.ttl;
-      if(tween>.9){
-        tween = (1-tween)/.1*.9;
-      }
-      particle.alpha = tween;
-
-      if(particle.ttl <= 0 || particle.x<0 || particle.x>this.container.width ||
-        particle.y<0 || particle.y > this.container.height){
-        //get the coordinates of another pollen particle
-        let position = this.pollenMasks[particle.genusId].getPollenPosition();
-        particle.ttl = 100;
-        particle.x = position[0];
-        particle.y = position[1];
+            if(particle.alive){
+              //get the coordinates of another pollen particle
+              let position = this.pollenMasks[particle.genusId].getPollenPosition();
+              particle.ttl = 100;
+              particle.x = position[0];
+              particle.y = position[1];
+            }else{
+              particlePool.splice(i,1);
+              this.container.removeChild(particle);
+            }
+        }
       }
     }
+
   }
 
 
@@ -151,7 +146,7 @@ class PollenParticle extends createjs.Shape{
 
   constructor(genusId,ttl){
     super();
-
+    this.alive = true; //to know if the particle has to be removed from pool
     this.genusId = genusId;
     this.graphics.beginFill(pollenColors[this.genusId]);
     let radius = 3;
