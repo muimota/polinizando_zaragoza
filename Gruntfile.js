@@ -47,6 +47,12 @@ module.exports = function(grunt) {
           src: 'index.html',
           dest: 'build/',
         },
+        images:{
+          expand: true,
+          cwd: 'src/',
+          src: 'imgs/**',
+          dest: 'build/',
+        }
       },
       browserify: {
         options: {
